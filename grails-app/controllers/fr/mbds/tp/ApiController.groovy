@@ -143,7 +143,7 @@ class ApiController {
                                 if(userMessageInstance.save(flush: true))
                                     render(status: 201, text: "Message ${messageInstance.id} was correctly created")
                                 else
-                                    render(status: 400, text: "Fail to create message ! ")
+                                    render(status: 400, text: "Fail to send message ! ")
                             }
                             else
                                 render(status: 404, text: "Message ${params.MessageId} doesn't exist")
@@ -172,12 +172,71 @@ class ApiController {
                         render(status: 404, text: "user not found")
                 }
                 else
-                    render(status: 400, text: "miss  userId")
+                    render(status: 400, text: "ID not found")
                 break
             default:
                 response.status=405
         }
     }
+
+    def messageToGroupe (){
+        switch (request.getMethod()){
+
+            case "POST":
+                if(params.RoleId){
+                    def roleReceiverInstance = Role.get(params.RoleId)
+                    if(roleReceiverInstance){
+                        if(params.MessageId){
+                            def messageInstance = Message.get(params.MessageId)
+                            if(messageInstance){
+                                def userRoleInstance=UserRole.findAllByRole(roleReceiverInstance)
+                                userRoleInstance.each{
+                                    def userInstance=User.get(it.user.id)
+                                    if(userInstance){
+                                        def userMessageInstance = new UserMessage(user: userInstance, message: messageInstance )
+                                        if(userMessageInstance.save(flush:true)) {
+                                            render(status: 201, text: "Message ${messageInstance.id} was created")
+                                        }else{
+                                            render(status: 400, text: "Fail to create message")
+                                        }
+                                    }
+                                }
+                            }else
+                                render(status: 404, text: "Message ${params.MessageId} doesn't exist")
+                        }else{
+                            def authorInstance = params.AuthorId ? User.get(params.AuthorId) : null
+                            def messageContentInstance = params.MessageContent
+                            if(authorInstance && messageContentInstance) {
+                                def newMessageInstance = new Message(author: authorInstance, messageContent: messageContentInstance)
+                                if (newMessageInstance.save(flush: true)){
+                                    def userRoleInstance=UserRole.findAllByRole(roleReceiverInstance)
+                                    userRoleInstance.each{
+                                        def userInstance=User.get(it.user.id)
+                                        if(userInstance){
+                                            def userMessageInstance = new UserMessage(user: userInstance, message: messageInstance )
+                                            if(userMessageInstance.save(flush:true)) {
+                                                render(status: 201, text: "Message ${messageInstance.id} was created")
+                                            }else{
+                                                render(status: 400, text: "fail to create message")
+                                            }
+                                        }
+                                    }
+                                }else
+                                    render(status: 400, text: "fail to create message of user")
+                            }else
+                                render(status: 404, text: "not found (message  or author)")
+                        }
+                    }else
+                        render(status: 404, text: " role not found ")
+                }else
+                    render(status: 400, text: "RoleId doesn't exist")
+                break
+            default:
+                response.status=405
+        }
+    }
+
+
 
 
 }
