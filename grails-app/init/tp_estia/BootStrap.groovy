@@ -18,7 +18,7 @@ class BootStrap {
             def userInstance = new User(username: "username-$it", password: "password", firstName: "first", lastName: "last", mail: "mail-$it", isDelete: false)
                     .save (flush: true, failOnError: true)
 
-            new Message(messageContent: "lalaPA", author: userInstance).save(flush:true, failOnError:true)
+            new Message(messageContent: "lalaPA", author: userInstance, isDelete: false).save(flush:true, failOnError:true)
         }
         Message.list().each {
             Message messageInstance ->

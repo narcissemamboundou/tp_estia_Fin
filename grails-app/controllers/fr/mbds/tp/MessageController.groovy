@@ -11,7 +11,8 @@ class MessageController {
 
     def index(Integer max) {
         params.max = Math.min(max ?: 10, 100)
-        respond messageService.list(params), model:[messageCount: messageService.count()]
+       // respond messageService.list(params), model:[messageCount: messageService.count()]
+        respond Message.findAllByIsDelete(false, params),  model:[messageCount: messageService.count()]
     }
 
     def show(Long id) {

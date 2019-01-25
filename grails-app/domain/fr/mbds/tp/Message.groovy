@@ -3,6 +3,7 @@ package fr.mbds.tp
 class Message {
 
     String messageContent
+    boolean  isDelete
 
     User author
 

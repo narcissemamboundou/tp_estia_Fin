@@ -3,7 +3,10 @@ package fr.mbds.tp
 
 import grails.converters.JSON
 import grails.converters.XML
-import org.apache.catalina.servlet4preview.http.HttpServletRequest
+
+import javax.servlet.http.HttpServletRequest
+
+//import org.apache.catalina.servlet4preview.http.HttpServletRequest
 
 class ApiController {
 
@@ -29,8 +32,8 @@ class ApiController {
             case "PUT":
                 def messageInstance = params.id? Message.get(params.id) : null
                 if (messageInstance){
-                    if (params.author.id){
-                        def authorInstance = User.get(params.author.id)
+                    if (params.authorId){
+                        def authorInstance = User.get(params.authorId)
                         if (authorInstance){
                             messageInstance.author= authorInstance
                         }
@@ -103,7 +106,7 @@ class ApiController {
 //                            def receiverInstance= User.get(params.receiver.id)
 //                            if(receiverInstance){new UserMessage(user: receiverInstance, Message: messageInstance).save(flush: true)}
 //                        }
-                        render(status: 201)
+                        render(status: 201, message : "message was created")
                     }
                 }
 
@@ -179,7 +182,96 @@ class ApiController {
         }
     }
 
-    def messageToGroupe (){
+    def user() {
+        switch (request.getMethod()) {
+            case "GET":
+                if (params.id) //On doit retourner une instance de message
+                {
+                    def userInstance = User.get(params.id)
+                    if (userInstance) {
+                        reponseFormat(userInstance, request)
+                    } else
+                        response.status = 404
+                } else
+                    forward action: "users"
+                break;
+
+            case "POST":
+                forward action: "users"
+                break;
+
+            case "PUT":
+                def userInstance = params.id ? User.get(params.id) : null
+                if (userInstance) {
+                    if (userInstance) {
+                        if (params.username) {
+                            userInstance.username = params.username
+                        }
+                        if (params.password) {
+                            userInstance.password = params.password
+                        }
+                        if (params.email) {
+                            userInstance.email = params.email
+                        }
+                        if (params.dob) {
+                            userInstance.dob = params.dob
+                        }
+                        if (params.tel) {
+                            userInstance.tel = params.tel
+                        }
+                        if (params.firstName) {
+                            userInstance.firstName = params.firstName
+                        }
+                        if (params.lastName) {
+                            userInstance.lastName = params.lastName
+                        }
+                        userInstance.save(flush: true)
+                    }
+                    if (userInstance.save(flush: true)) {
+                        render(text: "Mise Ã  jour effectuÃ©e pour l'utilisateur ${userInstance.id}")
+                    } else
+                        render(status: 400, text: "echec de la MAJ ${userInstance.id}")
+                } else
+                    render(status: 404, text: "l'utilisateur demander est introuvable")
+                break;
+
+            case "DELETE":
+                def userInstance = params.id ? User.get(params.id) : null
+                if (userInstance) {
+                    userInstance.isDeleted = false
+                    userInstance.delete(flush: true)
+                    render(status: 201, text: "utilisateur effacÃ©")
+                }
+                else
+                    render(status: 404, text: "utilisateur introuvable")
+                break;
+            default:
+                response.status = 405
+                break
+        }
+    }
+
+    def users() {
+        switch (request.getMethod()) {
+            case "GET":
+                reponseFormatList(User.list(), request)
+                break;
+            case "POST":
+                //CrÃ©er l'utilisateur
+                def userInstance = new User(password: params.password, username: params.username, email: params.email, dob: params.dob, tel: params.tel, firstName: params.firstName, lastName: params.lastName, isDeleted: params.isDeleted)
+                if (userInstance.save(flush: true)) {
+                    render(status: 201, text: "Nouvel utilisateur ${User.id} crÃ©Ã©")
+                }
+                if (response.status != 201)
+                    response.status = 400
+                break;
+        }
+    }
+
+
+
+
+    def messageToGroup (){
         switch (request.getMethod()){
 
             case "POST":
