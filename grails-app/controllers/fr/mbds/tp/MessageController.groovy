@@ -17,8 +17,9 @@ class MessageController {
     def show(Long id) {
         respond messageService.get(id)
         def messageInstance= Message.get(id)
-        def userMessgeList= UserMessage.findAllByMessage(messageInstance)
-        def userList= userMessgeList.collect {}
+        def userMessageList= UserMessage.findAllByMessage(messageInstance)
+        def userList= userMessageList.collect {}
+        respond messageInstance, model: [userList: userList]
     }
 
     def create() {
@@ -40,7 +41,7 @@ class MessageController {
 
         request.withFormat {
             form multipartForm {
-                flash.message = "Le message a été correctement créé (id : ${message.id})"
+                flash.message = "Message was correctly created (id : ${message.id})"
                 redirect message
             }
             '*' { respond message, [status: CREATED] }
@@ -75,7 +76,7 @@ class MessageController {
 
         request.withFormat {
             form multipartForm {
-                flash.message = "Le message ayant l'id ${message.id} a été correctement mis à jour"
+                flash.message = "Message whith ID ${message.id} was correctly update"
                 redirect message
             }
             '*'{ respond message, [status: OK] }

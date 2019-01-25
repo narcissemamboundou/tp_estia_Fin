@@ -11,6 +11,5 @@ class Message {
     static constraints = {
         messageContent nullable: false, blank: false
         author nullable: false
-        dateCreated nullable: false
     }
 }
