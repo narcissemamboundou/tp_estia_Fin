@@ -189,16 +189,16 @@ class ApiController {
                 {
                     def userInstance = User.get(params.id)
                     if (userInstance) {
-                        reponseFormat(userInstance, request)
+                        responseFormat(userInstance, request)
                     } else
                         response.status = 404
                 } else
                     forward action: "users"
-                break;
+                break
 
             case "POST":
                 forward action: "users"
-                break;
+                break
 
             case "PUT":
                 def userInstance = params.id ? User.get(params.id) : null
@@ -228,7 +228,7 @@ class ApiController {
                         userInstance.save(flush: true)
                     }
                     if (userInstance.save(flush: true)) {
-                        render(text: "Mise Ã  jour effectuÃ©e pour l'utilisateur ${userInstance.id}")
+                        render(text: "Mise Ã  jour effectue pour l'utilisateur ${userInstance.id}")
                     } else
                         render(status: 400, text: "echec de la MAJ ${userInstance.id}")
                 } else
@@ -254,13 +254,13 @@ class ApiController {
     def users() {
         switch (request.getMethod()) {
             case "GET":
-                reponseFormatList(User.list(), request)
+                responseFormatList(User.list(), request)
                 break;
             case "POST":
                 //CrÃ©er l'utilisateur
                 def userInstance = new User(password: params.password, username: params.username, email: params.email, dob: params.dob, tel: params.tel, firstName: params.firstName, lastName: params.lastName, isDeleted: params.isDeleted)
                 if (userInstance.save(flush: true)) {
-                    render(status: 201, text: "Nouvel utilisateur ${User.id} crÃ©Ã©")
+                    render(status: 201, text: "Nouvel utilisateur ${User.id} created")
                 }
                 if (response.status != 201)
                     response.status = 400
