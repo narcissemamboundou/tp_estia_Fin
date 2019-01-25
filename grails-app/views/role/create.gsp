@@ -1,3 +1,4 @@
+<%@ page import="fr.mbds.tp.User" %>
 <!DOCTYPE html>
 <html>
     <head>
@@ -28,6 +29,14 @@
             <g:form resource="${this.role}" method="POST">
                 <fieldset class="form">
                     <f:all bean="role"/>
+                    <g:select
+                            name="user lists"
+                            from="${User.findAllByIsDelete(false)}"
+                            optionValue="username"
+                            optionKey="id"
+                            multiple="true"
+                    />
+
                 </fieldset>
                 <fieldset class="buttons">
                     <g:submitButton name="create" class="save" value="${message(code: 'default.button.create.label', default: 'Create')}" />
