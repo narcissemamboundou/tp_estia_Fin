@@ -228,23 +228,23 @@ class ApiController {
                         userInstance.save(flush: true)
                     }
                     if (userInstance.save(flush: true)) {
-                        render(text: "Mise Ã  jour effectue pour l'utilisateur ${userInstance.id}")
+                        render(text: "update successful for user ${userInstance.id} for ${params.username}")
                     } else
                         render(status: 400, text: "echec de la MAJ ${userInstance.id}")
                 } else
-                    render(status: 404, text: "l'utilisateur demander est introuvable")
-                break;
+                    render(status: 404, text: "user not found")
+                break
 
             case "DELETE":
                 def userInstance = params.id ? User.get(params.id) : null
                 if (userInstance) {
-                    userInstance.isDeleted = false
+                    userInstance.isDelete = false
                     userInstance.delete(flush: true)
-                    render(status: 201, text: "utilisateur effacÃ©")
+                    render(status: 201, text: "user deleted ")
                 }
                 else
-                    render(status: 404, text: "utilisateur introuvable")
-                break;
+                    render(status: 404, text: "user not found ")
+                break
             default:
                 response.status = 405
                 break
@@ -255,16 +255,23 @@ class ApiController {
         switch (request.getMethod()) {
             case "GET":
                 responseFormatList(User.list(), request)
-                break;
+                break
             case "POST":
-                //CrÃ©er l'utilisateur
-                def userInstance = new User(password: params.password, username: params.username, email: params.email, dob: params.dob, tel: params.tel, firstName: params.firstName, lastName: params.lastName, isDeleted: params.isDeleted)
-                if (userInstance.save(flush: true)) {
-                    render(status: 201, text: "Nouvel utilisateur ${User.id} created")
+
+                def userInstance = new User(password: params.password, username: params.username, email: params.email, dob: params.dob, tel: params.tel, firstName: params.firstName, lastName: params.lastName, isDelete: params.isDelete)
+                if (userInstance){
+                    userInstance.save(flush:true)
+                    if (userInstance.save(flush: true)) {
+                        render(status: 201, text: "Nouvel utilisateur ${User.id} created")
+                    }
+                    if (response.status != 201)
+                        response.status = 410
                 }
-                if (response.status != 201)
-                    response.status = 400
-                break;
+
+                break
+            default:
+                response.status = 405
+                break
         }
     }
 

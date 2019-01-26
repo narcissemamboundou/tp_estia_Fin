@@ -10,7 +10,7 @@ import grails.compiler.GrailsCompileStatic
 class Role implements Serializable {
 
 	private static final long serialVersionUID = 1
-
+	boolean isDelete
 	String authority
 
 

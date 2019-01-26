@@ -9,8 +9,8 @@ import fr.mbds.tp.UserRole
 class BootStrap {
 
     def init = { servletContext ->
-        def userAdmin = new User(username: "adminName",password: "secret", firstName: "admin",lastName: "adminLast", mail: "adminMail", isDelete: false).save(flush: true, failOneError: true)
-        def roleAdmin = new Role(authority : "ROLE_ADMIN").save(flush: true, failOneError: true)
+        def userAdmin = new User(username: "admin",password: "secret", firstName: "admin",lastName: "adminLast", mail: "adminMail", isDelete: false).save(flush: true, failOneError: true)
+        def roleAdmin = new Role(authority : "ROLE_ADMIN",isDelete: false).save(flush: true, failOneError: true)
         //def roleVisitor = new Role(authority : "ROLE_VISITOR").save(flush: true, failOneError: true)
 
         UserRole.create(userAdmin,roleAdmin,true)
