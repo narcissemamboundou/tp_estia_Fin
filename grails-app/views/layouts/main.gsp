@@ -7,7 +7,7 @@
         <g:layoutTitle default="Grails"/>
     </title>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <asset:link rel="icon" href="favicon.ico" type="image/x-ico" />
+    <asset:link rel="icon" href="estia-logo.ico" type="image/x-ico" />
 
     <asset:stylesheet src="application.css"/>
 
@@ -25,7 +25,7 @@
                     <span class="icon-bar"></span>
                 </button>
                 <a class="navbar-brand" href="/#">
-		    <asset:image src="logo-estia.png" alt="Estia Logo"/>
+		    <asset:image src="grails-cupsonly-logo-white.svg" alt="Estia Logo"/>
                 </a>
             </div>
             <nav class="nav">

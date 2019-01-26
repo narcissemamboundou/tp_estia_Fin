@@ -42,17 +42,18 @@ class ApiController {
                         messageInstance.messageContent=params.messageContent
                     }
                     if (messageInstance.save(flush : true)){
-                        render (text : "Message updated ! ${messageInstance.id}")
+                        render (text : "mise a jour effectuée du message ${messageInstance.id}")
                     }
                     else {
-                        render(status: 400, text: "Faillure to update ${messageInstance.id}")
+                        render(status: 400, text: "Echec de mise a jour ${messageInstance.id}")
                     }
 
                 }
                 else {
-                    render (status: 404, text: "Damn!  message not found !")
+                    render (status: 404, text: "le message est introuvable")
                 }
                 break
+
             case "DELETE" :
                 def messageInstance = params.id? Message.get(params.id):null
                 if (messageInstance){
@@ -136,51 +137,49 @@ class ApiController {
         switch (request.getMethod()){
 
             case "POST":
-                if(params.UserId){
-                    def receiverInstance = User.get(params.UserId)
+                    def receiverInstance = params.userId? User.get(params.userId): null
                     if(receiverInstance){
-                        if(params.MessageId){
-                            def messageInstance = Message.get(params.MessageId)
+                        if(params.messageId){
+                            def messageInstance = Message.get(params.messageId)
                             if(messageInstance){
                                 def userMessageInstance = new UserMessage(user: receiverInstance, message: messageInstance)
                                 if(userMessageInstance.save(flush: true))
-                                    render(status: 201, text: "Message ${messageInstance.id} was correctly created")
+                                    render(status: 201, text: "Message ${messageInstance.id} was correctly send")
                                 else
                                     render(status: 400, text: "Fail to send message ! ")
                             }
                             else
-                                render(status: 404, text: "Message ${params.MessageId} doesn't exist")
+                                render(status: 404, text: "Message ID ${params.messageId} doesn't exist")
                         }
                         else
                         {
-                            def authorInstance = params.AuthorId ? User.get(params.AuthorId) : null
-                            def messageContentInstance = params.MessageContent
+                            def authorInstance = params.authorId ? User.get(params.authorId) : null
+                            def messageContentInstance = params.messageContent
                             if(authorInstance && messageContentInstance){
                                 def messageInstance = new Message(author: authorInstance, messageContent: messageContentInstance)
                                 if(messageInstance.save(flush:true)){
                                     def userMessageInstance = new UserMessage(user: receiverInstance, message: messageInstance)
                                     if(userMessageInstance.save(flush: true))
-                                        render(status: 201, text: "Message ${messageInstance.id} w")
+                                        render(status: 201, text: "Message ${messageInstance.id} was correctly send")
                                     else
                                         render(status: 400, text: "Failure to create message")
                                 }
                                 else
-                                    render(status: 400, text: "Failure to create userMessage")
+                                    render(status: 400, text: "Failure to send userMessage")
                             }
                             else
-                                render(status: 404, text: "author or messageContent not found")
+                                render(status: 404, text: "Not found")
                         }
                     }
                     else
-                        render(status: 404, text: "user not found")
-                }
-                else
-                    render(status: 400, text: "ID not found")
+                        render(status: 404, text: "userID not found")
+
                 break
             default:
                 response.status=405
         }
     }
+
 
     def user() {
         switch (request.getMethod()) {
@@ -206,6 +205,7 @@ class ApiController {
                     if (userInstance) {
                         if (params.username) {
                             userInstance.username = params.username
+                            userInstance.save(flush: true)
                         }
                         if (params.password) {
                             userInstance.password = params.password
@@ -228,7 +228,7 @@ class ApiController {
                         userInstance.save(flush: true)
                     }
                     if (userInstance.save(flush: true)) {
-                        render(text: "update successful for user ${userInstance.id} for ${params.username}")
+                        render(status: 200, text: "update successful for user ${userInstance.id} for ${userInstance.username}")
                     } else
                         render(status: 400, text: "echec de la MAJ ${userInstance.id}")
                 } else
@@ -258,10 +258,12 @@ class ApiController {
                 break
             case "POST":
 
-                def userInstance = new User(password: params.password, username: params.username, email: params.email, dob: params.dob, tel: params.tel, firstName: params.firstName, lastName: params.lastName, isDelete: params.isDelete)
+                def userInstance = new User(password: params.password, username: params.username, mail: params.mail, dob: params.dob, tel: params.tel, firstName: params.firstName, lastName: params.lastName, isDelete: params.isDelete)
                 if (userInstance){
-                    userInstance.save(flush:true)
-                    if (userInstance.save(flush: true)) {
+                    //def newUser= new UserController(user:userInstance)
+                    def newUser= new UserController(userInstance).create()
+
+                    if (newUser.save(flush: true)) {
                         render(status: 201, text: "Nouvel utilisateur ${User.id} created")
                     }
                     if (response.status != 201)

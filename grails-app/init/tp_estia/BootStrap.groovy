@@ -11,7 +11,12 @@ class BootStrap {
     def init = { servletContext ->
         def userAdmin = new User(username: "admin",password: "secret", firstName: "admin",lastName: "adminLast", mail: "adminMail", isDelete: false).save(flush: true, failOneError: true)
         def roleAdmin = new Role(authority : "ROLE_ADMIN",isDelete: false).save(flush: true, failOneError: true)
-        //def roleVisitor = new Role(authority : "ROLE_VISITOR").save(flush: true, failOneError: true)
+
+
+        def userSimple=new User(username: "user", password: "secret", firstName: "Michaud", lastName: "Antoine", mail: "usermail").save(flush: true)
+        def roleSimple=new Role(authority: "ROLE_SIMPLE").save(flush: true, failOneError: true)
+
+
 
         UserRole.create(userAdmin,roleAdmin,true)
         (1..50).each {
