@@ -44,8 +44,8 @@ pre {
 
 }
 .navbar-default, .navbar-static-top {
-    background-color: #424649;
-    border: 0px;
+    background-color: #110c49;
+    border: 2px;
 }
 a.navbar-brand {
     color: white !important;
@@ -595,7 +595,7 @@ h8 {
     margin-top: 0;
     padding-bottom: 5px;
     text-align: center;
-    color: #222;
+    color: #220e0d;
     font-size: 15px
 }
 
