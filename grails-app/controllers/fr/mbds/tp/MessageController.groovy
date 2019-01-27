@@ -6,6 +6,7 @@ import static org.springframework.http.HttpStatus.*
 class MessageController {
 
     MessageService messageService
+    //Message message
 
     static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
 

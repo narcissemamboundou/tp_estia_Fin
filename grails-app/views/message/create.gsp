@@ -17,7 +17,8 @@
             <h1><g:message code="default.create.label" args="[entityName]" /></h1>
             <g:if test="${flash.message}">
             <div class="message" role="status">${flash.message}</div>
-            </g:if>
+
+            </g:if >
             <g:hasErrors bean="${this.message}">
             <ul class="errors" role="alert">
                 <g:eachError bean="${this.message}" var="error">
@@ -26,8 +27,10 @@
             </ul>
             </g:hasErrors>
             <g:form resource="${this.message}" method="POST">
-                <fieldset class="form">
+                <fieldset class="form" >
+                    <textarea name="message" id="" cols="40" rows="10"></textarea>
                     <f:all bean="message"/>
+
                 </fieldset>
                 <fieldset class="buttons">
                     <g:submitButton name="create" class="save" value="${message(code: 'default.button.create.label', default: 'Create')}" />
